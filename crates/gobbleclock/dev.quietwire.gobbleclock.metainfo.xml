@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>dev.quietwire.gobbleclock</id>
+  <name>Gobble Clock</name>
+  <summary>Thanksgiving turkey cooking scheduler</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="dev.quietwire">
+    <name>Dennis Ayotte</name>
+  </developer>
+  <developer_name>Dennis Ayotte</developer_name>
+  <update_contact>dennis@thecaptaindumbass.com</update_contact>
+  <description>
+    <p>Gobble Clock plans every step of a slow cooked Thanksgiving turkey from its weight and the time you want to carve. It follows the method from howtocookathanksgivingturkey.com: 20 minutes at 475°F, then 20 minutes per pound at 250°F.</p>
+    <ul>
+      <li>Full schedule from turkey weight and carve time</li>
+      <li>Thaw planner that tells you when to move the turkey to the refrigerator</li>
+      <li>Cooking mode with a countdown and a reminder at every step</li>
+      <li>Printable checklist for the refrigerator door</li>
+      <li>Calendar export and a history of every year's turkey</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">gobbleclock.desktop</launchable>
+  <url type="homepage">https://forgejo.lab.quietwire.dev/dayotte/GobbleClock</url>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.1.0" date="2026-11-23"/>
+  </releases>
+</component>

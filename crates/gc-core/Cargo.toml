@@ -1,0 +1,13 @@
+[package]
+name = "gc-core"
+description = "Turkey schedule engine for Gobble Clock"
+version.workspace = true
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, features = ["serde", "std"] }
+serde = { version = "1", features = ["derive"] }

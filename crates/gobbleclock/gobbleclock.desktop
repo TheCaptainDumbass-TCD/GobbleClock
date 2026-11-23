@@ -1,0 +1,12 @@
+[Desktop Entry]
+Categories={{categories}}
+{{#if comment}}
+Comment={{comment}}
+{{/if}}
+Exec={{exec}}
+StartupWMClass={{exec}}
+Icon={{icon}}
+Name=Gobble Clock
+Keywords=turkey;thanksgiving;cooking;timer;roast;
+Terminal=false
+Type=Application

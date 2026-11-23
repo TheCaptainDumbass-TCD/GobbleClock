@@ -1,0 +1,64 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "gobbleclock",
+  "mainBinaryName": "gobbleclock",
+  "identifier": "dev.quietwire.gobbleclock",
+  "build": {
+    "beforeDevCommand": {
+      "script": "trunk serve",
+      "cwd": "../gc-ui",
+      "wait": false
+    },
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": {
+      "script": "trunk build --release",
+      "cwd": "../gc-ui"
+    },
+    "frontendDist": "../gc-ui/dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "label": "main",
+        "title": "Gobble Clock",
+        "width": 1180,
+        "height": 820,
+        "minWidth": 900,
+        "minHeight": 620
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb"],
+    "category": "Utility",
+    "shortDescription": "Thanksgiving turkey cooking scheduler",
+    "longDescription": "Gobble Clock plans every step of a slow cooked Thanksgiving turkey from its weight and the time you want to carve, then reminds you at each step and prints a checklist for the refrigerator.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png"
+    ],
+    "linux": {
+      "deb": {
+        "section": "misc",
+        "priority": "optional",
+        "desktopTemplate": "gobbleclock.desktop",
+        "files": {
+          "/usr/share/metainfo/dev.quietwire.gobbleclock.metainfo.xml": "dev.quietwire.gobbleclock.metainfo.xml",
+          "/usr/share/doc/gobbleclock/copyright": "debian/copyright"
+        }
+      }
+    },
+    "publisher": "Dennis Ayotte",
+    "copyright": "Copyright (C) 2026 Dennis Ayotte",
+    "license": "GPL-3.0-or-later",
+    "licenseFile": "../../LICENSE",
+    "homepage": "https://forgejo.lab.quietwire.dev/dayotte/GobbleClock"
+  }
+}
