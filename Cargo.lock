@@ -1387,7 +1387,7 @@ dependencies = [
 
 [[package]]
 name = "gc-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "serde",
@@ -1395,7 +1395,7 @@ dependencies = [
 
 [[package]]
 name = "gc-ui"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "gc-core",
@@ -1664,7 +1664,7 @@ dependencies = [
 
 [[package]]
 name = "gobbleclock"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "gc-core",

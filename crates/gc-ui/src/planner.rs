@@ -24,6 +24,23 @@ pub fn weight_text(lb: f64, unit: WeightUnit) -> String {
     }
 }
 
+/// Keeps digits and one decimal point. A comma counts as a decimal point.
+pub fn clean_weight(raw: &str) -> String {
+    let mut out = String::new();
+    let mut dot = false;
+    for c in raw.chars() {
+        match c {
+            '0'..='9' => out.push(c),
+            '.' | ',' if !dot => {
+                dot = true;
+                out.push('.');
+            }
+            _ => {}
+        }
+    }
+    out
+}
+
 pub fn thermometer_text(t: TempUnit) -> String {
     format!(
         "Always check the turkey with a meat thermometer before serving: {} in the breast and {} in the thigh. Timing is a guide. The thermometer is the final word.",
@@ -168,13 +185,12 @@ pub fn Planner() -> impl IntoView {
                     "Weight"
                     <div class="with-unit">
                         <input
-                            type="number"
-                            min="1"
-                            max="40"
-                            step="0.01"
+                            type="text"
+                            inputmode="decimal"
+                            autocomplete="off"
                             placeholder=move || if unit() == WeightUnit::Lb { "13.23" } else { "6" }
                             prop:value=move || ctx.weight.get()
-                            on:input=move |ev| ctx.weight.set(event_target_value(&ev))
+                            on:input=move |ev| ctx.weight.set(clean_weight(&event_target_value(&ev)))
                         />
                         <span>{move || if unit() == WeightUnit::Lb { "lb" } else { "kg" }}</span>
                     </div>

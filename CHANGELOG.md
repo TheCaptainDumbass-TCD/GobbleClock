@@ -2,6 +2,10 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
+## 0.1.1
+
+- The weight box now accepts decimals such as 7.35. A comma also works as the decimal point
+
 ## 0.1.0
 
 - Plan every step of a slow cooked turkey from its weight and carving time

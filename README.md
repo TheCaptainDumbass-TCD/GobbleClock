@@ -36,7 +36,7 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 ## Install
 
 ```sh
-sudo apt install ./gobbleclock_0.1.0_amd64.deb
+sudo apt install ./gobbleclock_0.1.1_amd64.deb
 ```
 
 Your data lives in `~/.local/share/dev.quietwire.gobbleclock`. Removing the package leaves it in place.
