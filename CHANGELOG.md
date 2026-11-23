@@ -2,6 +2,13 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
+## 0.1.4 (unreleased)
+
+- Settings and carving dates that could not come from the Settings screen, such as a hand edited file, are refused with a clear message instead of producing a broken schedule
+- Recipe links open through the Tauri opener and only the three recipe pages are allowed
+- Reminders keep running even if an earlier error left the app data locked
+- Windows 11 installer configuration with a Windows reminder sound
+
 ## 0.1.3
 
 - New Thawing button in the planner with the refrigerator thaw times table, your turkey's thaw date and safety tips

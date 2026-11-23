@@ -1,4 +1,4 @@
-use chrono::{Duration, NaiveDate, NaiveDateTime};
+use chrono::{Datelike, Duration, NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 
 use crate::{f_to_c, format_duration, format_time};
@@ -259,12 +259,16 @@ impl Schedule {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum PlanError {
     Weight,
+    Date,
+    Setting(&'static str),
 }
 
 impl std::fmt::Display for PlanError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             PlanError::Weight => write!(f, "Enter a turkey weight between 1 and {MAX_WEIGHT_LB:.0} pounds."),
+            PlanError::Date => write!(f, "Pick a carving day between {MIN_YEAR} and {MAX_YEAR}."),
+            PlanError::Setting(what) => write!(f, "The {what} setting is out of range. Use Reset to recipe in Settings."),
         }
     }
 }
@@ -319,10 +323,45 @@ pub fn thermometer_note(t: TempUnit, breast: bool) -> String {
     )
 }
 
+pub const MIN_YEAR: i32 = 2000;
+pub const MAX_YEAR: i32 = 2200;
+/// The longest any single timed step may be set to, in minutes.
+pub const MAX_STEP_MINUTES: u32 = 600;
+
+/// Rejects settings that could not come from the Settings screen, such as a hand edited file.
+fn check_settings(s: &Settings) -> Result<(), PlanError> {
+    let steps = [
+        (s.warmup_minutes, "out of the refrigerator"),
+        (s.prep_minutes, "prep"),
+        (s.sear_minutes, "hot start"),
+        (s.cover_after_minutes, "cover after"),
+        (s.brown_minutes, "browning"),
+        (s.rest_minutes, "rest"),
+        (s.buffer_minutes, "wiggle room"),
+    ];
+    if let Some((_, what)) = steps.iter().find(|(m, _)| *m > MAX_STEP_MINUTES) {
+        return Err(PlanError::Setting(what));
+    }
+    if !(1..=60).contains(&s.minutes_per_pound) {
+        return Err(PlanError::Setting("minutes per pound"));
+    }
+    if !(300..=550).contains(&s.sear_temp_f) {
+        return Err(PlanError::Setting("hot start temperature"));
+    }
+    if !(150..=400).contains(&s.low_temp_f) {
+        return Err(PlanError::Setting("slow cook temperature"));
+    }
+    Ok(())
+}
+
 pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
     if !input.weight_lb.is_finite() || input.weight_lb < 1.0 || input.weight_lb > MAX_WEIGHT_LB {
         return Err(PlanError::Weight);
     }
+    if !(MIN_YEAR..=MAX_YEAR).contains(&input.carve_at.year()) {
+        return Err(PlanError::Date);
+    }
+    check_settings(s)?;
     let t = s.temp_unit;
     let pounds = cook_pounds(input.weight_lb);
     let low_minutes = pounds * s.minutes_per_pound;
@@ -654,6 +693,20 @@ mod tests {
         // Two thirds of 240 minutes after 12:00.
         assert_eq!(time_of(&s, StepKind::FreshCheck), at(2025, 11, 27, 14, 40));
         assert!(s.thaw.is_none());
+    }
+
+    #[test]
+    fn rejects_out_of_range_settings_and_dates() {
+        let input = PlanInput { weight_lb: 13.0, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: false };
+        let huge = Settings { minutes_per_pound: u32::MAX, ..Settings::default() };
+        assert_eq!(build(&input, &huge).unwrap_err(), PlanError::Setting("minutes per pound"));
+        let long_rest = Settings { rest_minutes: MAX_STEP_MINUTES + 1, ..Settings::default() };
+        assert_eq!(build(&input, &long_rest).unwrap_err(), PlanError::Setting("rest"));
+        let cold = Settings { low_temp_f: 100, ..Settings::default() };
+        assert!(build(&input, &cold).is_err());
+        let far = PlanInput { carve_at: at(9999, 11, 27, 16, 20), ..input.clone() };
+        assert_eq!(build(&far, &Settings::default()).unwrap_err(), PlanError::Date);
+        assert!(build(&input, &Settings::default()).is_ok());
     }
 
     #[test]

@@ -95,7 +95,7 @@ pub fn RecipePanel() -> impl IntoView {
                     </ul>
                 </section>
             </div>
-            <p class="small muted">"These tips are a short summary written for Gobble Clock. The full recipe and the author's own words are on howtocookathanksgivingturkey.com."</p>
+            <p class="small muted">"These tips are a short summary written for Gobble Clock. The full recipe and the author's own words are on howtocookathanksgivingturkey.com. Gobble Clock is an independent app and is not affiliated with or endorsed by the website or its author."</p>
         </div>
     }
 }

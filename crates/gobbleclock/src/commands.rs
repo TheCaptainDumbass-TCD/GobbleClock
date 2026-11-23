@@ -6,6 +6,7 @@ use gc_core::{build, to_ics, to_text, HistoryEntry, PlanInput, Settings};
 use serde::Serialize;
 use tauri::{AppHandle, Manager, State};
 use tauri_plugin_dialog::DialogExt;
+use tauri_plugin_opener::OpenerExt;
 
 use crate::store::{self, ActiveCook, Data};
 
@@ -117,17 +118,20 @@ pub fn print_page(app: AppHandle) -> Result<(), String> {
     window.print().map_err(|e| e.to_string())
 }
 
+/// The only pages the app will open in the browser.
+const RECIPE_PAGES: [&str; 3] = [
+    "https://howtocookathanksgivingturkey.com/",
+    "https://howtocookathanksgivingturkey.com/pages/turkey-cooking-time.html",
+    "https://howtocookathanksgivingturkey.com/pages/convection-ovens.html",
+];
+
 /// Opens a page of the recipe website in the default browser. Other addresses are refused.
 #[tauri::command]
-pub fn open_link(url: String) -> Result<(), String> {
-    if !url.starts_with("https://howtocookathanksgivingturkey.com/") {
+pub fn open_link(app: AppHandle, url: String) -> Result<(), String> {
+    if !RECIPE_PAGES.contains(&url.as_str()) {
         return Err("Only the recipe website can be opened".into());
     }
-    std::process::Command::new("xdg-open")
-        .arg(&url)
-        .spawn()
-        .map(|_| ())
-        .map_err(|e| e.to_string())
+    app.opener().open_url(url, None::<&str>).map_err(|e| e.to_string())
 }
 
 #[tauri::command]

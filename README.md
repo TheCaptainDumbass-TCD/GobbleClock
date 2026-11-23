@@ -48,6 +48,14 @@ Your data lives in `~/.local/share/dev.quietwire.gobbleclock`. Removing the pack
 
 See `CONTRIBUTING.md`.
 
+## Credits
+
+The slow cook method comes from [How to Cook a Thanksgiving Turkey](https://howtocookathanksgivingturkey.com/). All credit for the recipe goes to the site's author. The tips in the app are short summaries in new wording, and the full recipe is on the site. Gobble Clock is an independent app and is not affiliated with or endorsed by the website or its author.
+
+## Food safety
+
+Gobble Clock times the steps, but ovens and turkeys vary. Always check the turkey with a meat thermometer before serving. The app comes with no warranty, as stated in the license.
+
 ## License
 
 Copyright (C) 2026 Dennis Ayotte. GPL-3.0-or-later. See `LICENSE`.

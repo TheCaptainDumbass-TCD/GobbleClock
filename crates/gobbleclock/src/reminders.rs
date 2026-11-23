@@ -11,6 +11,12 @@ use crate::commands::AppState;
 /// for example after the laptop wakes from sleep hours later.
 const STALE_MINUTES: i64 = 10;
 
+/// The system sound played with a reminder. Linux uses a freedesktop sound name, Windows a toast sound.
+#[cfg(windows)]
+const SOUND: &str = "Reminder";
+#[cfg(not(windows))]
+const SOUND: &str = "complete";
+
 #[derive(Clone, serde::Serialize)]
 pub struct StepDue {
     pub title: String,
@@ -20,7 +26,7 @@ pub struct StepDue {
 pub fn notify(app: &AppHandle, title: &str, body: &str, sound: bool) {
     let mut builder = app.notification().builder().title(title).body(body);
     if sound {
-        builder = builder.sound("complete");
+        builder = builder.sound(SOUND);
     }
     if let Err(e) = builder.show() {
         eprintln!("gobbleclock: notification failed: {e}");
@@ -51,8 +57,8 @@ pub fn start(app: AppHandle) {
             let now = Local::now().naive_local();
             let active = {
                 let state = app.state::<AppState>();
-                let data = state.data.lock().expect("data lock");
-                data.active.clone()
+                let data = state.data.lock();
+                data.map(|d| d.active.clone()).unwrap_or(None)
             };
             if let Some(cook) = active {
                 if let Ok(schedule) = build(&cook.input, &cook.settings) {
