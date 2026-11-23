@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Gobble Clock
 Upstream-Contact: Dennis Ayotte <dennis@thecaptaindumbass.com>
-Source: https://forgejo.lab.quietwire.dev/dayotte/GobbleClock
+Source: https://github.com/TheCaptainDumbass-TCD/GobbleClock
 
 Files: *
 Copyright: 2026 Dennis Ayotte <dennis@thecaptaindumbass.com>

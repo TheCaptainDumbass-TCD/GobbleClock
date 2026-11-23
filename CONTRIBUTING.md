@@ -10,6 +10,7 @@ Gobble Clock is a standalone desktop app for Debian 13 and Ubuntu that plans a s
 - License: GPL-3.0-or-later
 - Package name: `gobbleclock`, app ID `dev.quietwire.gobbleclock`
 - Stack: Tauri 2 desktop shell, Leptos (Rust/WebAssembly) UI, JSON files for storage
+- Public repository: https://github.com/TheCaptainDumbass-TCD/GobbleClock
 
 ## Method rules
 
