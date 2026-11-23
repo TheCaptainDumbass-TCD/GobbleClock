@@ -1,7 +1,7 @@
 use chrono::{NaiveDate, NaiveDateTime};
 use gc_core::{
-    format_day, format_duration, format_time, lb_to_kg, trim, CoverMode, Level, Schedule, Settings, Step, TempUnit,
-    WeightUnit, BREAST_DONE_F, THIGH_DONE_F,
+    format_day, format_duration, format_time, lb_to_kg, thermometer_note, trim, CoverMode, Level, Schedule, Settings,
+    Step, WeightUnit,
 };
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -39,14 +39,6 @@ pub fn clean_weight(raw: &str) -> String {
         }
     }
     out
-}
-
-pub fn thermometer_text(t: TempUnit) -> String {
-    format!(
-        "Always check the turkey with a meat thermometer before serving: {} in the breast and {} in the thigh. Timing is a guide. The thermometer is the final word.",
-        t.show(BREAST_DONE_F),
-        t.show(THIGH_DONE_F)
-    )
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -157,6 +149,7 @@ pub fn Planner() -> impl IntoView {
             weight_lb: input.weight_lb,
             carve_time: input.carve_at.time(),
             fresh: input.fresh,
+            breast: input.breast,
             cover_mode,
             rating: 0,
             notes: String::new(),
@@ -219,6 +212,14 @@ pub fn Planner() -> impl IntoView {
                         on:change=move |ev| ctx.fresh.set(event_target_checked(&ev))
                     />
                     "Fresh turkey, never frozen"
+                </label>
+                <label class="toggle">
+                    <input
+                        type="checkbox"
+                        prop:checked=move || ctx.breast.get()
+                        on:change=move |ev| ctx.breast.set(event_target_checked(&ev))
+                    />
+                    "Turkey breast only, no legs or wings"
                 </label>
                 <label class="toggle">
                     <input
@@ -367,7 +368,7 @@ fn schedule_view(s: Schedule, settings: Settings) -> impl IntoView {
         {s.notices.iter().map(|n| notice_view(n.level, n.text.clone())).collect_view()}
         <div class="notice thermo">
             <strong>"Check the temperature. "</strong>
-            {thermometer_text(t)}
+            {thermometer_note(t, s.input.breast)}
         </div>
         <div class="card">
             <h3>"Checklist"</h3>

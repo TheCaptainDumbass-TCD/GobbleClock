@@ -2,6 +2,11 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
+## 0.1.2
+
+- New "Turkey breast only" option for a breast with no legs or wings. The method and times stay the same, the thermometer check is the breast only at 170°F and there is an extra temperature check 30 minutes before it comes out
+- The breast only choice is saved in history and shown on the printout and exports
+
 ## 0.1.1
 
 - The weight box now accepts decimals such as 7.35. A comma also works as the decimal point

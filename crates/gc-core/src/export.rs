@@ -1,6 +1,6 @@
 use chrono::{Duration, NaiveDateTime};
 
-use crate::{format_day, format_duration, format_time, plan::trim, Schedule, Settings, BREAST_DONE_F, THIGH_DONE_F};
+use crate::{format_day, format_duration, format_time, plan::thermometer_note, plan::trim, Schedule, Settings};
 
 fn ics_time(t: NaiveDateTime) -> String {
     t.format("%Y%m%dT%H%M%S").to_string()
@@ -38,8 +38,9 @@ pub fn to_text(schedule: &Schedule, settings: &Settings) -> String {
     let t = settings.temp_unit;
     let carve = schedule.input.carve_at;
     let mut out = format!(
-        "GOBBLE CLOCK: TURKEY SCHEDULE\n{}\n\nTurkey: {} lb, timed as {} lb\nCarve at: {}\nOven time: {}\n",
+        "GOBBLE CLOCK: TURKEY SCHEDULE\n{}\n\n{}: {} lb, timed as {} lb\nCarve at: {}\nOven time: {}\n",
         format_day(carve.date()),
+        if schedule.input.breast { "Turkey breast" } else { "Turkey" },
         trim(schedule.input.weight_lb),
         schedule.cook_pounds,
         format_time(carve),
@@ -59,9 +60,8 @@ pub fn to_text(schedule: &Schedule, settings: &Settings) -> String {
         out.push_str(&format!("[ ] {:>8}  {}{}\n", format_time(step.at), step.title, oven));
     }
     out.push_str(&format!(
-        "\nAlways check the turkey with a meat thermometer before serving: {} in the breast and {} in the thigh. Timing is a guide. The thermometer is the final word.\n\nKeep the oven door closed from the moment the turkey goes in until it comes out.\n",
-        t.show(BREAST_DONE_F),
-        t.show(THIGH_DONE_F)
+        "\n{}\n\nKeep the oven door closed from the moment the turkey goes in until it comes out.\n",
+        thermometer_note(t, schedule.input.breast)
     ));
     out
 }
@@ -75,7 +75,7 @@ mod tests {
     #[test]
     fn exports_every_step() {
         let carve = NaiveDate::from_ymd_opt(2026, 11, 26).unwrap().and_hms_opt(16, 20, 0).unwrap();
-        let s = build(&PlanInput { weight_lb: 13.0, carve_at: carve, fresh: false }, &Settings::default()).unwrap();
+        let s = build(&PlanInput { weight_lb: 13.0, carve_at: carve, fresh: false, breast: false }, &Settings::default()).unwrap();
         let ics = to_ics(&s, carve);
         assert_eq!(ics.matches("BEGIN:VEVENT").count(), s.steps.len());
         assert!(ics.contains("DTSTART:20261126T162000"));

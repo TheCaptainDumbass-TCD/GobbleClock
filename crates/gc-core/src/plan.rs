@@ -8,6 +8,8 @@ pub const MAX_RECOMMENDED_LB: f64 = 20.0;
 pub const MAX_WEIGHT_LB: f64 = 40.0;
 pub const BREAST_DONE_F: u32 = 170;
 pub const THIGH_DONE_F: u32 = 180;
+/// A turkey breast gets an extra check this long before it is due out.
+pub const BREAST_EARLY_CHECK_MINUTES: u32 = 30;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "snake_case")]
@@ -141,6 +143,9 @@ pub struct PlanInput {
     pub carve_at: NaiveDateTime,
     #[serde(default)]
     pub fresh: bool,
+    /// A turkey breast with no legs or wings: there is no thigh to check.
+    #[serde(default)]
+    pub breast: bool,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -153,6 +158,7 @@ pub enum StepKind {
     ReduceHeat,
     Cover,
     FreshCheck,
+    BreastCheck,
     Uncover,
     Remove,
     Rest,
@@ -291,6 +297,23 @@ fn minutes(m: u32) -> Duration {
     Duration::minutes(m as i64)
 }
 
+/// Where to check and what it should read. A breast only has the breast to check.
+pub fn doneness(t: TempUnit, breast: bool) -> String {
+    if breast {
+        format!("{} in the thickest part of the breast, not touching the bone", t.show(BREAST_DONE_F))
+    } else {
+        format!("{} in the breast and {} in the thigh", t.show(BREAST_DONE_F), t.show(THIGH_DONE_F))
+    }
+}
+
+/// The reminder that goes on every schedule, printout and export.
+pub fn thermometer_note(t: TempUnit, breast: bool) -> String {
+    format!(
+        "Always check the turkey with a meat thermometer before serving: {}. Timing is a guide. The thermometer is the final word.",
+        doneness(t, breast)
+    )
+}
+
 pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
     if !input.weight_lb.is_finite() || input.weight_lb < 1.0 || input.weight_lb > MAX_WEIGHT_LB {
         return Err(PlanError::Weight);
@@ -313,7 +336,11 @@ pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
             kind: StepKind::Warmup,
             at: warmup_start,
             title: "Take the turkey out of the refrigerator".into(),
-            detail: "Let it warm toward room temperature. A cold turkey is the top reason it is not done on time. Remove the neck and giblets.".into(),
+            detail: if input.breast {
+                "Let it warm toward room temperature. A cold turkey is the top reason it is not done on time. Remove any gravy packet.".into()
+            } else {
+                "Let it warm toward room temperature. A cold turkey is the top reason it is not done on time. Remove the neck and giblets.".into()
+            },
             minutes: Some(s.warmup_minutes),
             oven_f: None,
             tone: Tone::Hands,
@@ -381,9 +408,24 @@ pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
             at,
             title: "Fresh turkey: check the temperature early".into(),
             detail: format!(
-                "Fresh, never frozen turkeys can cook faster. If the breast reads {} and the thigh {}, take it out and keep it warm.",
-                t.show(BREAST_DONE_F),
-                t.show(THIGH_DONE_F)
+                "Fresh, never frozen turkeys can cook faster. If it reads {}, take it out and keep it warm.",
+                doneness(t, input.breast)
+            ),
+            minutes: None,
+            oven_f: Some(s.low_temp_f),
+            tone: Tone::Check,
+        });
+    }
+
+    let breast_check = remove - minutes(BREAST_EARLY_CHECK_MINUTES);
+    if input.breast && breast_check > low_start {
+        steps.push(Step {
+            kind: StepKind::BreastCheck,
+            at: breast_check,
+            title: "Turkey breast: check the temperature early".into(),
+            detail: format!(
+                "With no legs or wings it can finish sooner. Open the door only long enough to check. If it reads {}, take it out and start the rest.",
+                doneness(t, true)
             ),
             minutes: None,
             oven_f: Some(s.low_temp_f),
@@ -409,9 +451,8 @@ pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
         at: remove,
         title: "Take the turkey out and check the temperature".into(),
         detail: format!(
-            "Use a meat thermometer: {} in the breast and {} in the thigh. If it is not there yet, put it back in and check again in 20 minutes.",
-            t.show(BREAST_DONE_F),
-            t.show(THIGH_DONE_F)
+            "Use a meat thermometer: {}. If it is not there yet, put it back in and check again in 20 minutes.",
+            doneness(t, input.breast)
         ),
         minutes: None,
         oven_f: None,
@@ -469,6 +510,14 @@ pub fn build(input: &PlanInput, s: &Settings) -> Result<Schedule, PlanError> {
             ),
         });
     }
+    if input.breast {
+        notices.push(Notice {
+            level: Level::Info,
+            text: format!(
+                "Turkey breast only: same method and times, but there is no thigh to check. Check the breast {BREAST_EARLY_CHECK_MINUTES} minutes early because it can finish sooner."
+            ),
+        });
+    }
     let rounded = (input.weight_lb - pounds as f64).abs() > 0.001;
     if rounded {
         notices.push(Notice {
@@ -518,7 +567,7 @@ mod tests {
     }
 
     fn plan(weight: f64) -> Schedule {
-        let input = PlanInput { weight_lb: weight, carve_at: at(2025, 11, 27, 16, 20), fresh: false };
+        let input = PlanInput { weight_lb: weight, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: false };
         build(&input, &Settings::default()).unwrap()
     }
 
@@ -575,7 +624,7 @@ mod tests {
 
     #[test]
     fn buffer_shifts_everything() {
-        let input = PlanInput { weight_lb: 13.23, carve_at: at(2025, 11, 27, 16, 20), fresh: false };
+        let input = PlanInput { weight_lb: 13.23, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: false };
         let settings = Settings { buffer_enabled: true, ..Settings::default() };
         let s = build(&input, &settings).unwrap();
         assert_eq!(time_of(&s, StepKind::Remove), at(2025, 11, 27, 15, 0));
@@ -584,7 +633,7 @@ mod tests {
 
     #[test]
     fn cover_modes() {
-        let input = PlanInput { weight_lb: 12.0, carve_at: at(2025, 11, 27, 16, 20), fresh: false };
+        let input = PlanInput { weight_lb: 12.0, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: false };
         let uncovered = build(&input, &Settings { cover_mode: CoverMode::Uncovered, ..Settings::default() }).unwrap();
         assert!(uncovered.step(StepKind::Cover).is_none());
         assert!(uncovered.step(StepKind::Uncover).is_none());
@@ -595,11 +644,26 @@ mod tests {
 
     #[test]
     fn fresh_turkey_gets_early_check_and_no_thaw() {
-        let input = PlanInput { weight_lb: 12.0, carve_at: at(2025, 11, 27, 16, 20), fresh: true };
+        let input = PlanInput { weight_lb: 12.0, carve_at: at(2025, 11, 27, 16, 20), fresh: true, breast: false };
         let s = build(&input, &Settings::default()).unwrap();
         // Two thirds of 240 minutes after 12:00.
         assert_eq!(time_of(&s, StepKind::FreshCheck), at(2025, 11, 27, 14, 40));
         assert!(s.thaw.is_none());
+    }
+
+    #[test]
+    fn breast_only_checks_early_and_has_no_thigh() {
+        let input = PlanInput { weight_lb: 7.35, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: true };
+        let s = build(&input, &Settings::default()).unwrap();
+        assert_eq!(s.cook_pounds, 7);
+        assert_eq!(time_of(&s, StepKind::ReduceHeat), at(2025, 11, 27, 13, 40));
+        assert_eq!(time_of(&s, StepKind::BreastCheck), at(2025, 11, 27, 15, 30));
+        assert_eq!(time_of(&s, StepKind::Remove), at(2025, 11, 27, 16, 0));
+        assert!(s.steps.iter().all(|st| !st.detail.contains("thigh")));
+        assert!(thermometer_note(TempUnit::F, true).contains("170°F in the thickest part of the breast"));
+        assert!(thermometer_note(TempUnit::F, false).contains("180°F in the thigh"));
+        let whole = plan(7.35);
+        assert!(whole.step(StepKind::BreastCheck).is_none());
     }
 
     #[test]
@@ -621,7 +685,7 @@ mod tests {
         assert!(plan(21.0).notices.iter().any(|n| n.level == Level::Danger));
         assert!(plan(12.0).notices.is_empty());
         assert!(build(
-            &PlanInput { weight_lb: 0.0, carve_at: at(2025, 11, 27, 16, 20), fresh: false },
+            &PlanInput { weight_lb: 0.0, carve_at: at(2025, 11, 27, 16, 20), fresh: false, breast: false },
             &Settings::default()
         )
         .is_err());

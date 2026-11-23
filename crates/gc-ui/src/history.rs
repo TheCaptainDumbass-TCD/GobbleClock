@@ -47,12 +47,13 @@ pub fn HistoryPanel() -> impl IntoView {
                 </div>
                 <p class="muted">
                     {format!(
-                        "{}. {}, timed as {} lb. Carved at {}.{}",
+                        "{}. {}, timed as {} lb. Carved at {}.{}{}",
                         format_day(e.date),
                         weight_text(e.weight_lb, unit),
                         cook_pounds(e.weight_lb),
                         gc_core::format_time(carve),
                         if e.fresh { " Fresh turkey." } else { "" },
+                        if e.breast { " Turkey breast only." } else { "" },
                     )}
                 </p>
                 <p class="small muted">{e.cover_mode.label()}</p>

@@ -3,7 +3,7 @@ use gc_core::{format_time, HistoryEntry, StepKind};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 
-use crate::planner::{step_row, thermometer_text, weight_text, when, RowState};
+use crate::planner::{step_row, weight_text, when, RowState};
 use crate::{api, Ctx, Panel};
 
 fn countdown(from: NaiveDateTime, to: NaiveDateTime) -> String {
@@ -38,6 +38,7 @@ pub fn CookPanel() -> impl IntoView {
                             weight_lb: c.input.weight_lb,
                             carve_time: c.input.carve_at.time(),
                             fresh: c.input.fresh,
+                            breast: c.input.breast,
                             cover_mode: c.settings.cover_mode,
                             rating: 0,
                             notes: String::new(),
@@ -159,7 +160,7 @@ pub fn CookPanel() -> impl IntoView {
                     </div>
                     <div class="notice thermo">
                         <strong>"Check the temperature. "</strong>
-                        {thermometer_text(settings.temp_unit)}
+                        {gc_core::thermometer_note(settings.temp_unit, s.input.breast)}
                     </div>
                     <p class="muted small">
                         {format!(

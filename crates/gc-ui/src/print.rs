@@ -1,7 +1,7 @@
 use gc_core::{format_day, format_duration, trim};
 use leptos::prelude::*;
 
-use crate::planner::{thermometer_text, weight_text, when};
+use crate::planner::{weight_text, when};
 use crate::Ctx;
 
 /// Hidden on screen. When printing, it is the only thing on the page:
@@ -29,8 +29,9 @@ pub fn PrintSheet() -> impl IntoView {
                             <h1>{format!("Turkey Checklist: {}", format_day(day))}</h1>
                             <p>
                                 {format!(
-                                    "{} turkey, timed as {} lb. Carve at {}. {} from refrigerator to table.",
+                                    "{} {}, timed as {} lb. Carve at {}. {} from refrigerator to table.",
                                     weight_text(s.input.weight_lb, settings.weight_unit),
+                                    if s.input.breast { "turkey breast" } else { "turkey" },
                                     s.cook_pounds,
                                     gc_core::format_time(s.input.carve_at),
                                     format_duration(s.total_minutes as i64),
@@ -40,7 +41,7 @@ pub fn PrintSheet() -> impl IntoView {
                     </header>
                     <div class="print-thermo">
                         <strong>"CHECK THE TEMPERATURE"</strong>
-                        <span>{thermometer_text(t)}</span>
+                        <span>{gc_core::thermometer_note(t, s.input.breast)}</span>
                     </div>
                     <table>
                         <thead>

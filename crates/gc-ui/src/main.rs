@@ -56,6 +56,7 @@ pub struct Ctx {
     pub date: RwSignal<String>,
     pub time: RwSignal<String>,
     pub fresh: RwSignal<bool>,
+    pub breast: RwSignal<bool>,
     pub toast: RwSignal<Option<Toast>>,
     pub printing: RwSignal<Option<(Schedule, Settings)>>,
     pub input: Memo<Result<PlanInput, String>>,
@@ -74,9 +75,10 @@ impl Ctx {
         let date = RwSignal::new(next_thanksgiving(now().date()).format("%Y-%m-%d").to_string());
         let time = RwSignal::new("16:20".to_string());
         let fresh = RwSignal::new(false);
+        let breast = RwSignal::new(false);
         let active = RwSignal::new(None::<ActiveCook>);
         let input = Memo::new(move |_| {
-            parse_input(&weight.get(), &date.get(), &time.get(), fresh.get(), settings.with(|s| s.weight_unit))
+            parse_input(&weight.get(), &date.get(), &time.get(), fresh.get(), breast.get(), settings.with(|s| s.weight_unit))
         });
         let schedule = Memo::new(move |_| {
             let input = input.get()?;
@@ -94,6 +96,7 @@ impl Ctx {
             date,
             time,
             fresh,
+            breast,
             toast: RwSignal::new(None),
             printing: RwSignal::new(None),
             input,
@@ -151,6 +154,7 @@ impl Ctx {
         self.weight.set(gc_core::trim(w));
         self.time.set(e.carve_time.format("%H:%M").to_string());
         self.fresh.set(e.fresh);
+        self.breast.set(e.breast);
         self.date.set(next_thanksgiving(now().date()).format("%Y-%m-%d").to_string());
         self.panel.set(Panel::Plan);
     }
@@ -171,7 +175,7 @@ impl Ctx {
     }
 }
 
-pub fn parse_input(weight: &str, date: &str, time: &str, fresh: bool, unit: WeightUnit) -> Result<PlanInput, String> {
+pub fn parse_input(weight: &str, date: &str, time: &str, fresh: bool, breast: bool, unit: WeightUnit) -> Result<PlanInput, String> {
     let w: f64 = weight.trim().parse().map_err(|_| "Enter the turkey weight.".to_string())?;
     let weight_lb = match unit {
         WeightUnit::Lb => w,
@@ -181,7 +185,7 @@ pub fn parse_input(weight: &str, date: &str, time: &str, fresh: bool, unit: Weig
     let t = NaiveTime::parse_from_str(time, "%H:%M")
         .or_else(|_| NaiveTime::parse_from_str(time, "%H:%M:%S"))
         .map_err(|_| "Pick the time you want to carve.".to_string())?;
-    Ok(PlanInput { weight_lb, carve_at: day.and_time(t), fresh })
+    Ok(PlanInput { weight_lb, carve_at: day.and_time(t), fresh, breast })
 }
 
 #[component]

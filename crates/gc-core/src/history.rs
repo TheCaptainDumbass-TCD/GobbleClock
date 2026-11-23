@@ -13,6 +13,8 @@ pub struct HistoryEntry {
     #[serde(default)]
     pub fresh: bool,
     #[serde(default)]
+    pub breast: bool,
+    #[serde(default)]
     pub cover_mode: CoverMode,
     /// 0 means not rated, otherwise 1 to 5.
     #[serde(default)]
@@ -33,6 +35,7 @@ pub fn seed_history() -> Vec<HistoryEntry> {
             weight_lb: weight,
             carve_time: carve,
             fresh: false,
+            breast: false,
             cover_mode: CoverMode::CoverThenBrown,
             rating: 5,
             notes: "From the Turkey Schedule spreadsheet. Out of the oven at 4:00 PM and carved at 4:20 PM.".into(),
