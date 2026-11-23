@@ -36,6 +36,40 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 - Harvest light, fireside dark and system themes
 - Advanced method times, with Reset to recipe
 
+## Screenshots
+
+**Plan:** Enter the weight and carving time and the whole day is laid out.
+
+![Plan](docs/screenshots/01-plan.png)
+
+**Cook:** A live countdown to the next step, with a reminder and chime at each one.
+
+![Cook](docs/screenshots/03-cook.png)
+
+**Printed checklist:** One page to hang on the refrigerator or a cabinet.
+
+![Printed checklist](docs/screenshots/08-print.png)
+
+**Thawing:** Refrigerator thaw times and the day to move your turkey to the refrigerator.
+
+![Thawing](docs/screenshots/02-thawing.png)
+
+**History:** Every year you cook, with notes and a rating.
+
+![History](docs/screenshots/04-history.png)
+
+**Recipe:** Credit and links to the recipe website, with tips for the day.
+
+![Recipe](docs/screenshots/05-recipe.png)
+
+**Settings:** Units, theme, sound and the recipe times under Advanced.
+
+![Settings](docs/screenshots/06-settings.png)
+
+**Dark mode:** Light, dark or match the system.
+
+![Dark mode](docs/screenshots/07-dark.png)
+
 ## Install
 
 ```sh
