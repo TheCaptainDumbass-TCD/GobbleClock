@@ -85,6 +85,14 @@ pub async fn print_page() -> Result<(), String> {
     invoke("print_page", JsValue::UNDEFINED).await
 }
 
+pub async fn open_link(url: &str) -> Result<(), String> {
+    #[derive(Serialize)]
+    struct A<'a> {
+        url: &'a str,
+    }
+    invoke("open_link", args(&A { url })).await
+}
+
 pub async fn quit_app() -> Result<(), String> {
     invoke("quit_app", JsValue::UNDEFINED).await
 }

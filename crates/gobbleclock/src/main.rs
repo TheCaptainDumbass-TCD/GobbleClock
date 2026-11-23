@@ -53,6 +53,7 @@ fn main() {
             commands::test_reminder,
             commands::export_schedule,
             commands::print_page,
+            commands::open_link,
             commands::quit_app,
         ])
         .run(tauri::generate_context!())

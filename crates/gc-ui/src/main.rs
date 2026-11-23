@@ -3,9 +3,11 @@ mod cook;
 mod history;
 mod planner;
 mod print;
+mod recipe;
 mod settings;
 mod sound;
 mod tauri;
+mod thaw;
 
 use std::time::Duration;
 
@@ -21,17 +23,19 @@ pub enum Panel {
     Plan,
     Cook,
     History,
+    Recipe,
     Settings,
 }
 
 impl Panel {
-    const ALL: [Panel; 4] = [Panel::Plan, Panel::Cook, Panel::History, Panel::Settings];
+    const ALL: [Panel; 5] = [Panel::Plan, Panel::Cook, Panel::History, Panel::Recipe, Panel::Settings];
 
     fn label(self) -> &'static str {
         match self {
             Panel::Plan => "Plan",
             Panel::Cook => "Cook",
             Panel::History => "History",
+            Panel::Recipe => "Recipe",
             Panel::Settings => "Settings",
         }
     }
@@ -57,6 +61,7 @@ pub struct Ctx {
     pub time: RwSignal<String>,
     pub fresh: RwSignal<bool>,
     pub breast: RwSignal<bool>,
+    pub thaw_help: RwSignal<bool>,
     pub toast: RwSignal<Option<Toast>>,
     pub printing: RwSignal<Option<(Schedule, Settings)>>,
     pub input: Memo<Result<PlanInput, String>>,
@@ -97,6 +102,7 @@ impl Ctx {
             time,
             fresh,
             breast,
+            thaw_help: RwSignal::new(false),
             toast: RwSignal::new(None),
             printing: RwSignal::new(None),
             input,
@@ -263,6 +269,7 @@ fn App() -> impl IntoView {
                     Panel::Plan => planner::Planner().into_any(),
                     Panel::Cook => cook::CookPanel().into_any(),
                     Panel::History => history::HistoryPanel().into_any(),
+                    Panel::Recipe => recipe::RecipePanel().into_any(),
                     Panel::Settings => settings::SettingsPanel().into_any(),
                 }}
             </main>
@@ -277,6 +284,9 @@ fn App() -> impl IntoView {
                         }
                     })
             }}
+            <Show when=move || ctx.thaw_help.get()>
+                <thaw::ThawHelp />
+            </Show>
             <Show when=move || quit_prompt.get()>
                 <div class="modal-back">
                     <div class="modal">

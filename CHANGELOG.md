@@ -2,6 +2,11 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
+## 0.1.3
+
+- New Thawing button in the planner with the refrigerator thaw times table, your turkey's thaw date and safety tips
+- New Recipe tab that credits howtocookathanksgivingturkey.com, links to the recipe, the roasting time chart and the convection page, and sums up the tips in short form
+
 ## 0.1.2
 
 - New "Turkey breast only" option for a breast with no legs or wings. The method and times stay the same, the thermometer check is the breast only at 170°F and there is an extra temperature check 30 minutes before it comes out

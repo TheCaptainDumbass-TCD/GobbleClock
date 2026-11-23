@@ -26,6 +26,8 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 - Save the checklist as text or as a calendar file with an alarm for every step
 - Thaw planner that gives the day to move a frozen turkey to the refrigerator
 - Fresh turkey mode with an early temperature check
+- Thawing window with refrigerator thaw times and safety tips
+- Recipe tab that credits howtocookathanksgivingturkey.com and links to it
 - Turkey breast only mode: breast only thermometer check and an early check 30 minutes before it comes out
 - Optional wiggle room so the turkey is ready early
 - Lid options: cover then brown, covered or uncovered
@@ -37,7 +39,7 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 ## Install
 
 ```sh
-sudo apt install ./gobbleclock_0.1.2_amd64.deb
+sudo apt install ./gobbleclock_0.1.3_amd64.deb
 ```
 
 Your data lives in `~/.local/share/dev.quietwire.gobbleclock`. Removing the package leaves it in place.

@@ -278,6 +278,11 @@ pub fn cook_pounds(weight_lb: f64) -> u32 {
     (((hundredths + 50) / 100).max(1)) as u32
 }
 
+/// The website's refrigerator thaw table: pounds from, pounds to, days from, days to.
+pub const THAW_TABLE: [(u32, u32, u32, u32); 4] = [(8, 12, 2, 3), (13, 16, 3, 4), (17, 20, 4, 5), (21, 24, 5, 6)];
+/// A refrigerator for thawing should hold this temperature or colder.
+pub const FRIDGE_MAX_F: u32 = 40;
+
 /// Days to thaw in the refrigerator, from the website's table. Above 24 pounds it
 /// continues at about one day per 4 pounds.
 pub fn thaw_days(weight_lb: f64) -> (u32, u32) {

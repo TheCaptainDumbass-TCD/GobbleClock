@@ -117,6 +117,19 @@ pub fn print_page(app: AppHandle) -> Result<(), String> {
     window.print().map_err(|e| e.to_string())
 }
 
+/// Opens a page of the recipe website in the default browser. Other addresses are refused.
+#[tauri::command]
+pub fn open_link(url: String) -> Result<(), String> {
+    if !url.starts_with("https://howtocookathanksgivingturkey.com/") {
+        return Err("Only the recipe website can be opened".into());
+    }
+    std::process::Command::new("xdg-open")
+        .arg(&url)
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| e.to_string())
+}
+
 #[tauri::command]
 pub fn quit_app(app: AppHandle) {
     app.exit(0);

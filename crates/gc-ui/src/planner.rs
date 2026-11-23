@@ -293,6 +293,13 @@ pub fn Planner() -> impl IntoView {
                     >
                         "Save to history"
                     </button>
+                    <button
+                        class="btn thaw-btn"
+                        title="Refrigerator thaw times and safety tips"
+                        on:click=move |_| ctx.thaw_help.set(true)
+                    >
+                        "Thawing"
+                    </button>
                 </div>
             </section>
             <section class="results">
@@ -331,13 +338,19 @@ fn milestone(label: &'static str, at: Option<NaiveDateTime>, day: NaiveDate) -> 
 
 fn schedule_view(s: Schedule, settings: Settings) -> impl IntoView {
     use gc_core::StepKind::*;
+    let ctx = expect_context::<Ctx>();
     let day = s.input.carve_at.date();
     let t = settings.temp_unit;
     let at = |k| s.step(k).map(|x| x.at);
     let thaw = s.thaw.clone().map(|th| {
         view! {
             <div class="card thaw">
-                <h3>"Frozen turkey?"</h3>
+                <div class="row between">
+                    <h3>"Frozen turkey?"</h3>
+                    <button class="btn small-btn" on:click=move |_| ctx.thaw_help.set(true)>
+                        "Thaw times and safety"
+                    </button>
+                </div>
                 <p>
                     "Move it from the freezer to the refrigerator by "
                     <strong>{format_day(th.latest)}</strong>
