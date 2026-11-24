@@ -81,4 +81,6 @@ Semantic versioning, 0.x until the first public release, which will be 1.0.0.
 3. Add a `<release>` entry to `crates/gobbleclock/dev.quietwire.gobbleclock.metainfo.xml`.
 4. Run the tests, clippy and the WebAssembly check.
 5. Commit, create an annotated tag `vX.Y.Z` and build the `.deb`.
-6. Push `main` and the tag, then attach the `.deb` and `SHA256SUMS` to a GitHub release.
+6. Push `main` and the tag. The tag starts the Windows build on GitHub Actions.
+7. Download the Windows artifacts from that run, rename them to `gobbleclock_X.Y.Z_x64-setup.exe` and `gobbleclock_X.Y.Z_x64_en-US.msi`, then write `SHA256SUMS` for the `.deb`, setup `.exe` and `.msi`.
+8. Attach all four files to a GitHub release.
