@@ -119,18 +119,19 @@ pub fn print_page(app: AppHandle) -> Result<(), String> {
 }
 
 /// The only pages the app will open in the browser.
-const ALLOWED_LINKS: [&str; 4] = [
+const ALLOWED_LINKS: [&str; 5] = [
     "https://howtocookathanksgivingturkey.com/",
     "https://howtocookathanksgivingturkey.com/pages/turkey-cooking-time.html",
     "https://howtocookathanksgivingturkey.com/pages/convection-ovens.html",
     "https://github.com/TheCaptainDumbass-TCD/GobbleClock",
+    "https://thecaptaindumbass.com/gobbleclock/",
 ];
 
-/// Opens a recipe page or the project page in the default browser. Other addresses are refused.
+/// Opens a recipe page, the GitHub page or the Gobble Clock website in the default browser. Other addresses are refused.
 #[tauri::command]
 pub fn open_link(app: AppHandle, url: String) -> Result<(), String> {
     if !ALLOWED_LINKS.contains(&url.as_str()) {
-        return Err("Only the recipe website and the Gobble Clock GitHub page can be opened".into());
+        return Err("Only the recipe website and the Gobble Clock pages can be opened".into());
     }
     app.opener().open_url(url, None::<&str>).map_err(|e| e.to_string())
 }

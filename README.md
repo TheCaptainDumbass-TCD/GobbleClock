@@ -2,6 +2,8 @@
 
 Desktop app for Debian 13 and Ubuntu that plans every step of a slow cooked Thanksgiving turkey. Enter the weight and the time you want to carve, and Gobble Clock works backward to tell you when to take the turkey out of the refrigerator, when it goes in the oven and when to turn the oven down. It runs entirely on your own machine.
 
+Website: [thecaptaindumbass.com/gobbleclock](https://thecaptaindumbass.com/gobbleclock/)
+
 ## The method
 
 Gobble Clock follows the slow cook method from [howtocookathanksgivingturkey.com](https://howtocookathanksgivingturkey.com/) and the Turkey Schedule spreadsheet it replaces.

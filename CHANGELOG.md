@@ -2,6 +2,11 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
+## 1.1.0
+
+- Settings has a new button that opens the Gobble Clock website
+- The package homepage is now the Gobble Clock website
+
 ## 1.0.0
 
 First public release.

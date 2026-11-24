@@ -5,6 +5,7 @@ use leptos::task::spawn_local;
 use crate::{api, Ctx};
 
 pub const GITHUB: &str = "https://github.com/TheCaptainDumbass-TCD/GobbleClock";
+pub const WEBSITE: &str = "https://thecaptaindumbass.com/gobbleclock/";
 
 fn change(ctx: Ctx, f: impl FnOnce(&mut Settings)) {
     let mut s = ctx.settings.get_untracked();
@@ -189,6 +190,19 @@ pub fn SettingsPanel() -> impl IntoView {
                         }
                     >
                         "Open the GitHub page"
+                    </button>
+                    <button
+                        class="btn"
+                        title=WEBSITE
+                        on:click=move |_| {
+                            spawn_local(async move {
+                                if let Err(e) = api::open_link(WEBSITE).await {
+                                    ctx.fail(format!("Could not open the website: {e}"));
+                                }
+                            })
+                        }
+                    >
+                        "Open the website"
                     </button>
                 </div>
                 <p class="small muted">

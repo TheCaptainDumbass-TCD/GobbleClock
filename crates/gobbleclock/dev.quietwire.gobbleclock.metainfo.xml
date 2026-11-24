@@ -21,7 +21,8 @@
     </ul>
   </description>
   <launchable type="desktop-id">gobbleclock.desktop</launchable>
-  <url type="homepage">https://github.com/TheCaptainDumbass-TCD/GobbleClock</url>
+  <url type="homepage">https://thecaptaindumbass.com/gobbleclock/</url>
+  <url type="vcs-browser">https://github.com/TheCaptainDumbass-TCD/GobbleClock</url>
   <categories>
     <category>Utility</category>
   </categories>
