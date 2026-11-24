@@ -77,7 +77,7 @@ impl Ctx {
     fn new() -> Ctx {
         let settings = RwSignal::new(Settings::default());
         let weight = RwSignal::new(String::new());
-        let date = RwSignal::new(next_thanksgiving(now().date()).format("%Y-%m-%d").to_string());
+        let date = RwSignal::new(Ctx::default_date());
         let time = RwSignal::new("16:20".to_string());
         let fresh = RwSignal::new(false);
         let breast = RwSignal::new(false);
@@ -109,6 +109,29 @@ impl Ctx {
             schedule,
             active_schedule,
         }
+    }
+
+    fn default_date() -> String {
+        next_thanksgiving(now().date()).format("%Y-%m-%d").to_string()
+    }
+
+    /// True when the planner holds anything other than the defaults.
+    pub fn plan_changed(self) -> bool {
+        let time = self.settings.with(|s| s.default_carve_time.clone());
+        !self.weight.get().trim().is_empty()
+            || self.date.get() != Self::default_date()
+            || self.time.get() != time
+            || self.fresh.get()
+            || self.breast.get()
+    }
+
+    /// Clears the weight and puts the day, carving time and checkboxes back to the defaults.
+    pub fn reset_plan(self) {
+        self.weight.set(String::new());
+        self.date.set(Self::default_date());
+        self.time.set(self.settings.with_untracked(|s| s.default_carve_time.clone()));
+        self.fresh.set(false);
+        self.breast.set(false);
     }
 
     pub fn say(self, text: impl Into<String>) {

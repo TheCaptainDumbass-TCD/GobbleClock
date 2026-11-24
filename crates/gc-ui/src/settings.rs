@@ -4,6 +4,8 @@ use leptos::task::spawn_local;
 
 use crate::{api, Ctx};
 
+pub const GITHUB: &str = "https://github.com/TheCaptainDumbass-TCD/GobbleClock";
+
 fn change(ctx: Ctx, f: impl FnOnce(&mut Settings)) {
     let mut s = ctx.settings.get_untracked();
     f(&mut s);
@@ -169,11 +171,26 @@ pub fn SettingsPanel() -> impl IntoView {
                         .and_then(|r| r.ok())
                         .map(|i| {
                             view! {
-                                <p>{format!("{} {} ({})", i.name, i.version, i.commit)}</p>
+                                <p>{format!("{} version {}", i.name, i.version)}</p>
                                 <p class="small muted">{format!("Your data: {}", i.data_dir)}</p>
                             }
                         })
                 }}
+                <div class="actions">
+                    <button
+                        class="btn"
+                        title=GITHUB
+                        on:click=move |_| {
+                            spawn_local(async move {
+                                if let Err(e) = api::open_link(GITHUB).await {
+                                    ctx.fail(format!("Could not open the GitHub page: {e}"));
+                                }
+                            })
+                        }
+                    >
+                        "Open the GitHub page"
+                    </button>
+                </div>
                 <p class="small muted">
                     "Cooking method from howtocookathanksgivingturkey.com. Copyright (C) 2026 Dennis Ayotte. GPL-3.0-or-later."
                 </p>

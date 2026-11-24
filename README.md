@@ -35,6 +35,8 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 - °F or °C and lb or kg
 - Harvest light, fireside dark and system themes
 - Advanced method times, with Reset to recipe
+- Reset button that puts the plan back to the defaults
+- App version and a link to this GitHub page in Settings
 
 ## Screenshots
 
@@ -62,7 +64,7 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 
 ![Recipe](docs/screenshots/05-recipe.png)
 
-**Settings:** Units, theme, sound and the recipe times under Advanced.
+**Settings:** Units, theme, sound, the app version and a link to this GitHub page. The recipe times are under Advanced.
 
 ![Settings](docs/screenshots/06-settings.png)
 
@@ -73,7 +75,7 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 ## Install
 
 ```sh
-sudo apt install ./gobbleclock_0.1.3_amd64.deb
+sudo apt install ./gobbleclock_1.0.0_amd64.deb
 ```
 
 Your data lives in `~/.local/share/dev.quietwire.gobbleclock`. Removing the package leaves it in place.

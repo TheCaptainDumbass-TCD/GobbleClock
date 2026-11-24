@@ -2,8 +2,12 @@
 
 Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release builds.
 
-## 0.1.4 (unreleased)
+## 1.0.0
 
+First public release.
+
+- New Reset button on the Plan tab that clears the weight and puts the day, carving time and checkboxes back to the defaults. It is grayed out while a cook is running or when there is nothing to reset
+- Settings shows the app version and has a button that opens the Gobble Clock GitHub page
 - Settings and carving dates that could not come from the Settings screen, such as a hand edited file, are refused with a clear message instead of producing a broken schedule
 - Recipe links open through the Tauri opener and only the three recipe pages are allowed
 - Reminders keep running even if an earlier error left the app data locked

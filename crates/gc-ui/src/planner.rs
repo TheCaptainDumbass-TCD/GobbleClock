@@ -104,6 +104,15 @@ pub fn Planner() -> impl IntoView {
         }
     };
     let plan_ok = move || ctx.schedule.with(|s| s.is_ok());
+    let reset_block = move || -> Option<&'static str> {
+        if ctx.active.with(|a| a.is_some()) {
+            Some("A cook is running. Stop it on the Cook tab first")
+        } else if !ctx.plan_changed() {
+            Some("Nothing to reset, the plan already has the defaults")
+        } else {
+            None
+        }
+    };
 
     let start = move |_| {
         let Ok(input) = ctx.input.get_untracked() else { return };
@@ -299,6 +308,17 @@ pub fn Planner() -> impl IntoView {
                         on:click=move |_| ctx.thaw_help.set(true)
                     >
                         "Thawing"
+                    </button>
+                    <button
+                        class="btn"
+                        disabled=move || reset_block().is_some()
+                        title=move || reset_block().unwrap_or("Clear the weight and put the day, carving time and checkboxes back to the defaults")
+                        on:click=move |_| {
+                            ctx.reset_plan();
+                            ctx.say("The plan is back to the defaults");
+                        }
+                    >
+                        "Reset"
                     </button>
                 </div>
             </section>
