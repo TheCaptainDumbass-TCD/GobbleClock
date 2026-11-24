@@ -4,6 +4,8 @@ Gobble Clock follows semantic versioning. Versions below 1.0.0 are pre-release b
 
 ## 1.1.0
 
+- Windows 11 support with a setup program that installs for the current user and an MSI
+- Windows installers are built on GitHub Actions for every release
 - Settings has a new button that opens the Gobble Clock website
 - The package homepage is now the Gobble Clock website
 

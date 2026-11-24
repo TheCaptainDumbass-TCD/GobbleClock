@@ -1,6 +1,6 @@
 # Gobble Clock
 
-Desktop app for Debian 13 and Ubuntu that plans every step of a slow cooked Thanksgiving turkey. Enter the weight and the time you want to carve, and Gobble Clock works backward to tell you when to take the turkey out of the refrigerator, when it goes in the oven and when to turn the oven down. It runs entirely on your own machine.
+Desktop app for Windows 11, Debian 13 and Ubuntu that plans every step of a slow cooked Thanksgiving turkey. Enter the weight and the time you want to carve, and Gobble Clock works backward to tell you when to take the turkey out of the refrigerator, when it goes in the oven and when to turn the oven down. It runs entirely on your own machine.
 
 Website: [thecaptaindumbass.com/gobbleclock](https://thecaptaindumbass.com/gobbleclock/)
 
@@ -76,11 +76,23 @@ Always check the turkey with a meat thermometer. Timing is a guide. The thermome
 
 ## Install
 
+Download the files from the [latest release](https://github.com/TheCaptainDumbass-TCD/GobbleClock/releases/latest). `SHA256SUMS` lists the checksum of each file.
+
+### Debian and Ubuntu
+
 ```sh
-sudo apt install ./gobbleclock_1.0.0_amd64.deb
+sudo apt install ./gobbleclock_1.1.0_amd64.deb
 ```
 
 Your data lives in `~/.local/share/dev.quietwire.gobbleclock`. Removing the package leaves it in place.
+
+### Windows 11
+
+Run `gobbleclock_1.1.0_x64-setup.exe`. It installs for your user only and does not need administrator rights. The MSI file is there for anyone who prefers it.
+
+The installer is not code signed yet, so Windows may show "Windows protected your PC". Click **More info**, then **Run anyway**.
+
+Your data lives in `%APPDATA%\dev.quietwire.gobbleclock`. Uninstalling leaves it in place.
 
 ## Build
 
